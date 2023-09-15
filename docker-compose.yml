@@ -1,0 +1,34 @@
+version: '3.9'
+
+services:
+  # Spring Boot application
+  spring-boot-app:
+    image: sohit28/task-be:latest
+    ports:
+      - "8090:8090"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      - db
+    networks:
+      - spring-boot-network
+
+  # PostgreSQL database
+  db:
+    image: postgres:latest
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - spring-boot-network
+
+networks:
+  spring-boot-network:
+    driver: bridge
