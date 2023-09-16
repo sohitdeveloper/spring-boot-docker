@@ -3,23 +3,26 @@ version: '3.9'
 services:
   # Spring Boot application..
   spring-boot-app:
-    image: sohit28/task-be:latest
+    image: task-be
     ports:
-      - "8090:8090"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      - "8090:8080"
     depends_on:
       - db
     networks:
       - spring-boot-network
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5438/postgres  # Use container port 5438
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_DATABASE-PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_SHOW-SQL: true
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
   # PostgreSQL database
   db:
-    image: postgres:latest
+    image: postgres
     ports:
-      - "5433:5432"
+      - "5438:5432"  # Map host port 5438 to container port 5432
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
@@ -31,4 +34,4 @@ services:
 
 networks:
   spring-boot-network:
-    driver: bridge
+    driver: bridge  # Set network mode to "bridge" explicitly
