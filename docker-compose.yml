@@ -7,11 +7,12 @@ services:
     ports:
       - "8090:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - spring-boot-network
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5438/postgres  # Use container port 5438
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5438/postgres  # Use container port 5438
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_JPA_DATABASE-PLATFORM: org.hibernate.dialect.PostgreSQLDialect
@@ -31,6 +32,11 @@ services:
       - ./data:/var/lib/postgresql/data
     networks:
       - spring-boot-network
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 10s
+      retries: 5
+      timeout: 5s
 
 networks:
   spring-boot-network:

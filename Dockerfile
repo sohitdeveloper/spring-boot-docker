@@ -11,4 +11,4 @@ COPY ./target/task-api.jar /app
 EXPOSE 8090
 
 # Starting the application
-CMD ["java", "-jar", "task-api.jar"]
+ENTRYPOINT ["java", "-jar", "task-api.jar"]
