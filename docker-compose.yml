@@ -9,10 +9,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    networks:
-      - spring-boot-network
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5438/postgres  # Use container port 5438
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres  # Use container port 5432
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_JPA_DATABASE-PLATFORM: org.hibernate.dialect.PostgreSQLDialect
@@ -23,21 +21,15 @@ services:
   db:
     image: postgres
     ports:
-      - "5438:5432"  # Map host port 5438 to container port 5432
+      - "5432:5432"  # Map host port 5432 to container port 5432
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
       - ./data:/var/lib/postgresql/data
-    networks:
-      - spring-boot-network
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres" ]
       interval: 10s
       retries: 5
       timeout: 5s
-
-networks:
-  spring-boot-network:
-    driver: bridge  # Set network mode to "bridge" explicitly
